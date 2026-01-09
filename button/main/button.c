@@ -50,6 +50,7 @@ esp_err_t button_event_set(button_config_t *cfg)
         // 创建定时器 返回句柄
         esp_timer_create(&button_timer, &button_timer_handle);
         esp_timer_start_periodic(button_timer_handle, 5000); // 5000us 一次}
+        timer_running = true;
     }
     return ESP_OK;
 }
@@ -65,7 +66,7 @@ static void button_handle(void *arg)
         {
         case BUTTON_RELEASE: // 按键松开 空闲状态
             // 是否被按下，判断是否是按下的电平
-            if (btn_info->btn_cfg.getlevel_cb((gpio_num) == btn_info->btn_cfg.active_level))
+            if (btn_info->btn_cfg.getlevel_cb(gpio_num) == btn_info->btn_cfg.active_level)
             {
                 // 有按钮按下，检测到了
                 btn_info->state = BUTTON_PRESS;
@@ -74,9 +75,9 @@ static void button_handle(void *arg)
             break;
         case BUTTON_PRESS: // 按键按下 消抖
             // 判断按键有没有松开
-            if (btn_info->btn_cfg.getlevel_cb((gpio_num) == btn_info->btn_cfg.active_level))
+            if (btn_info->btn_cfg.getlevel_cb(gpio_num) == btn_info->btn_cfg.active_level)
             {
-                btn_info->press_cnt = interval;
+                btn_info->press_cnt += interval;
                 if (btn_info->press_cnt >= 20)
                 {
                     if (btn_info->btn_cfg.short_press_cb)
@@ -93,13 +94,13 @@ static void button_handle(void *arg)
             }
             break;
         case BUTTON_HOLD: // 按键按住状态
-            if (btn_info->btn_cfg.getlevel_cb((gpio_num) == btn_info->btn_cfg.active_level))
+            if (btn_info->btn_cfg.getlevel_cb(gpio_num) == btn_info->btn_cfg.active_level)
             {
-                btn_info->press_cnt = interval;
+                btn_info->press_cnt += interval;
                 if (btn_info->press_cnt >= btn_info->btn_cfg.long_press_time)
                 {
                     if (btn_info->btn_cfg.long_press_cb)
-                    {
+                    {                   
                         btn_info->btn_cfg.long_press_cb(gpio_num);
                         btn_info->state = BUTTON_LONG_PRESS_HOLD; 
                     }
@@ -112,7 +113,7 @@ static void button_handle(void *arg)
             }
             break;
         case BUTTON_LONG_PRESS_HOLD: // 等待松手
-            if (!btn_info->btn_cfg.getlevel_cb((gpio_num) == btn_info->btn_cfg.active_level))
+            if (btn_info->btn_cfg.getlevel_cb(gpio_num) != btn_info->btn_cfg.active_level)
             {
                 btn_info->state = BUTTON_RELEASE;
                 btn_info->press_cnt = 0;

@@ -6,15 +6,14 @@
     "board/esp32s3-builtin.cfg"
   ],
   "idf.port": "/dev/ttyUSB0",
-  "idf.toolsPath": "/home/m/esp/.espressif",
+  "idf.toolsPath": "/home/m/.espressif",
   "idf.customExtraVars": {
     "IDF_TARGET": "esp32s3"
   },
-  "clangd.path": "/home/m/esp/.espressif/tools/esp-clang/esp-19.1.2_20250312/esp-clang/bin/clangd",
+  "clangd.path": "/home/m/.espressif/tools/esp-clang/esp-19.1.2_20250312/esp-clang/bin/clangd",
   "clangd.arguments": [
     "--background-index",
     "--query-driver=**",
-    "--compile-commands-dir=/home/m/esp_demo/wifi/build"
-  ],
-  "idf.flashType": "UART"
+    "--compile-commands-dir=/home/m/Project/esp_demo/wifi/build"
+  ]
 }

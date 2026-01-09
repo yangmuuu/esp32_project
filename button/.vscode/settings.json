@@ -15,5 +15,6 @@
     "--background-index",
     "--query-driver=**",
     "--compile-commands-dir=/home/m/Project/esp_demo/button/build"
-  ]
+  ],
+  "idf.flashType": "UART"
 }
